@@ -1,0 +1,13 @@
+Todo API
+Buatlah sebuah REST API sederhana untuk sebuah aplikasi ToDo List dengan menggunakan Express.js, database MongoDB, dan juga ORM Mongoose.
+
+Fitur-fitur yang perlu dibuat antara lain :
+
+Authentication & Authorization menggunakan JWT.
+CRUD Task :
+Create new task
+Edit Task.
+Mark as completed/uncompleted
+Get all tasks
+Delete task
+Pastikan juga kalian menerapkan Authorization-nya dengan baik, sehingga setiap user hanya dapat mengelola daftar task mereka masing-masing.
