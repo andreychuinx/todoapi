@@ -32,7 +32,8 @@ class SignInController {
                 res.status(HttpStatus.OK).json({
                   messages : "Signin",
                   data : {
-                    token : token
+                    authorization : token,
+                    user : objPayLoad
                   }
                 })
               })
