@@ -21,6 +21,7 @@ class SignInController {
               
               let objPayLoad = {
                 userId : result.id,
+		userName : result.name,
                 email : result.email,
                 role : result.role
               }
