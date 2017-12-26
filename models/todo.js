@@ -3,17 +3,21 @@ const Schema = mongoose.Schema;
 mongoose.connect('mongodb://localhost:27017/todo', {useMongoClient: true})
 mongoose.Promise = global.Promise;
 
-var taskSchema = new Schema({
+var todoSchema = new Schema({
   name : String,
-  userId : {
+  taskId : {
+    type : Schema.Types.ObjectId,
+    ref : 'Task'
+  },
+  userId : [{
     type : Schema.Types.ObjectId,
     ref : 'User'
-  },
+  }],
   description : String,
   statusCompleted : {
-    type : String,
-    default : 'unCompleted'
+    type : Number,
+    default : 0
   }
-},{ timestamps: {} })
+}, {timestamps : {}})
 
-module.exports = mongoose.model('Task', taskSchema)
+module.exports = mongoose.model('Todo', todoSchema)

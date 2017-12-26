@@ -9,7 +9,10 @@ var userSchema = new Schema({
   name : String,
   email : String,
   password : String,
-  role : String,
+  role : {
+    type : String,
+    default : 'user'
+  },
   created_date : {
     type :Date,
     default : Date.now

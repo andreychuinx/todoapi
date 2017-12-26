@@ -1,23 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const TaskModel = require('../models/task')
+const TodoModel = require('../models/todo')
 const HttpStatus = require('http-status-codes')
 const ObjectID = require('mongodb').ObjectID;
 
-class TaskController {
+class TodoController {
   static get(req, res) {
-    TaskModel.find()
-    .populate('userId')
-    .exec()
+    TodoModel.find()
+      .populate('taskId')
+      .populate('userId')
+      .exec()
       .then(result => {
         res.status(HttpStatus.OK).json({
-          messages: "Data Tasks",
+          messages: "Data Todos",
           data: result
         })
       })
       .catch(err => {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-          messages: "Data Tasks Error Server",
+          messages: "Data Todos Error Server",
           data: err,
           error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
         })
@@ -25,62 +26,69 @@ class TaskController {
   }
 
   static getSingle(req, res) {
-    TaskModel.findById(req.params.id)
-    .populate('userId')
-    .exec()
+    TodoModel.findById(req.params.id)
+      .populate('taskId')
+      .populate('userId')
+      .exec()
       .then(result => {
         res.status(HttpStatus.OK).json({
-          messages: "Data Single Task",
+          messages: "Data Single Todo",
           data: result
         })
       })
       .catch(err => {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-          messages: "Data Task Error",
+          messages: "Data Todo Error",
           data: err,
           error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
         })
       })
   }
 
-  static getTaskUser(req, res){
+  static getTodoUser(req, res) {
     console.log(req.decoded.userId)
-    TaskModel.find({userId : req.decoded.userId})
-    .populate('userId')
-    .exec()
-    .then(result => {
-      res.status(HttpStatus.OK).json({
-        messages : "Data Task User",
-        data : result
-      })
+    TodoModel.find({
+      userId: {
+        $in: [req.decoded.userId]
+      }
     })
-    .catch(err =>{
-      console.log(err)
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-        messages: "Data Task Error",
-        data: err,
-        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+      .populate('taskId')
+      .populate('userId')
+      .exec()
+      .then(result => {
+        res.status(HttpStatus.OK).json({
+          messages: "Data Todo User",
+          data: result
+        })
       })
-    })
+      .catch(err => {
+        console.log(err)
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+          messages: "Data Todo Error",
+          data: err,
+          error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+        })
+      })
   }
 
   static create(req, res) {
-    let { name, userId, description } = req.body
-    let dataTask = new TaskModel({
+    let { name, taskId, userId, description } = req.body
+    let dataTodo = new TodoModel({
       name,
+      taskId,
       userId,
       description
     })
-    dataTask.save()
+    dataTodo.save()
       .then(result => {
         res.status(HttpStatus.OK).json({
-          messages: "Tasks Created",
+          messages: "Todos Created",
           data: result
         })
       })
       .catch(err => {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-          messages: "Data Tasks Error Server",
+          messages: "Data Todos Error Server",
           data: err,
           error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
         })
@@ -88,17 +96,17 @@ class TaskController {
   }
 
   static update(req, res) {
-    let { name, description } = req.body
-    TaskModel.findByIdAndUpdate(req.params.id, { name, description })
+    let { name, userId, description } = req.body
+    TodoModel.findByIdAndUpdate(req.params.id, { name, userId, description })
       .then(result => {
         res.status(HttpStatus.OK).json({
-          messages: "Task Updated",
+          messages: "Todo Updated",
           data: result
         })
       })
       .catch(err => {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-          messages: "Update Task Error Server",
+          messages: "Update Todo Error Server",
           data: err,
           error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
         })
@@ -106,14 +114,14 @@ class TaskController {
   }
 
   static destroy(req, res) {
-    TaskModel.findByIdAndRemove(req.params.id)
+    TodoModel.findByIdAndRemove(req.params.id)
       .then(result => {
         res.status(HttpStatus.OK).json({
-          messages: "Task Deleted",
+          messages: "Todo Deleted",
           data: result
         })
       })
   }
 }
 
-module.exports = TaskController
+module.exports = TodoController

@@ -7,7 +7,7 @@ const authAdmin = require('../middlewares/authAdmin')
 
 router.get('/', authentication, authAdmin, User.get)
 router.get('/:id', authentication, authUser, User.getSingle)
-router.post('/', User.create)
+router.post('/', authentication, authAdmin, User.create)
 router.put('/:id', authentication, authUser, User.update)
 router.delete('/:id', authentication, authAdmin, User.destroy)
 

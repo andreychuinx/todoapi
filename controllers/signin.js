@@ -10,9 +10,9 @@ class SignInController {
     UserModel.findOne({'email' : req.body.email})
       .then(result => {
         if(!result){
-          res.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).send({
+          res.status(HttpStatus.NOT_FOUND).send({
             messages : "Email Not Found",
-            error : HttpStatus.getStatusText(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
+            error : HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
           })
         }else{
           result.comparePassword(req.body.password)
