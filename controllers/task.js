@@ -46,7 +46,7 @@ class TaskController {
   }
   
   static getTodos(req, res){
-    TodoModel.findById(req.params.id, {}, authorization)
+    TodoModel.findById(req.params.id, {}, authorization(req))
     .populate('taskId')
     .populate('assignUsers')
     .populate('createdBy')
