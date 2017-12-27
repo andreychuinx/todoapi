@@ -44,27 +44,31 @@ class TaskController {
         })
       })
   }
-  
-  static getTodos(req, res){
-    TodoModel.findById(req.params.id, {}, authorization(req))
-    .populate('taskId')
-    .populate('assignUsers')
-    .populate('createdBy')
-    .populate('updatedBy')
-    .exec()
-    .then(result => {
-      res.status(HttpStatus.OK).json({
-        messages: "Data Task Todos",
-        data: result
+
+  static getTodos(req, res) {
+    TaskModel.findById(req.params.id, {}, authorization(req))
+      .then(result => {
+        TodoModel.find({taskId : result._id})
+          .populate('taskId')
+          .populate('assignUsers')
+          .populate('createdBy')
+          .populate('updatedBy')
+          .exec()
+          .then(result => {
+            res.status(HttpStatus.OK).json({
+              messages: "Data Task Todos",
+              data: result
+            })
+          })
+          .catch(err => {
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+              messages: "Data Tasks Error Server",
+              data: err,
+              error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
+            })
+          })
       })
-    })
-    .catch(err => {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-        messages: "Data Tasks Error Server",
-        data: err,
-        error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-      })
-    })
+
   }
 
   static create(req, res) {
@@ -92,11 +96,11 @@ class TaskController {
 
   static update(req, res) {
     let { name, description } = req.body
-    TaskModel.findByIdAndUpdate(req.params.id,{
-        name,
-        description,
-        updatedBy: req.decoded.userId
-      },authorization(req))
+    TaskModel.findByIdAndUpdate(req.params.id, {
+      name,
+      description,
+      updatedBy: req.decoded.userId
+    }, authorization(req))
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Task Updated",
