@@ -5,11 +5,10 @@ const authentication = require('../middlewares/authentication')
 const authUser = require('../middlewares/authUser')
 const authAdmin = require('../middlewares/authAdmin')
 
-router.get('/',authentication, authAdmin, Todo.get)
-router.get('/:id', authentication, authUser, Todo.getSingle)
-router.get('/usertodo/list', authentication, Todo.getTodoUser)
+router.get('/',authentication, Todo.get)
+router.get('/:id', authentication, Todo.getSingle)
 router.post('/', authentication, Todo.create)
-router.put('/:id', authentication, authUser, Todo.update)
-router.delete('/:id', authentication, authUser, Todo.destroy)
+router.put('/:id', authentication, Todo.update)
+router.delete('/:id', authentication, Todo.destroy)
 
 module.exports = router

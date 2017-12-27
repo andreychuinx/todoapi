@@ -5,14 +5,19 @@ mongoose.Promise = global.Promise;
 
 var taskSchema = new Schema({
   name : String,
-  userId : {
-    type : Schema.Types.ObjectId,
-    ref : 'User'
-  },
+  
   description : String,
   statusCompleted : {
     type : String,
     default : 'unCompleted'
+  },
+  createdBy : {
+    type : Schema.Types.ObjectId,
+    ref : 'User'
+  },
+  updatedBy : {
+    type : Schema.Types.ObjectId,
+    ref : 'User'
   }
 },{ timestamps: {} })
 

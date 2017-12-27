@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const TaskModel = require('../models/task')
+const TodoModel = require('../models/todo')
 const HttpStatus = require('http-status-codes')
+const authorization = require('../helpers/authorization')
 const ObjectID = require('mongodb').ObjectID;
 
 class TaskController {
   static get(req, res) {
-    TaskModel.find()
-    .populate('userId')
-    .exec()
+    TaskModel.find(authorization(req))
+      .populate('createdBy')
+      .exec()
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Tasks",
@@ -25,9 +27,9 @@ class TaskController {
   }
 
   static getSingle(req, res) {
-    TaskModel.findById(req.params.id)
-    .populate('userId')
-    .exec()
+    TaskModel.findById(req.params.id, {}, authorization(req))
+      .populate('createdBy')
+      .exec()
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Single Task",
@@ -42,22 +44,23 @@ class TaskController {
         })
       })
   }
-
-  static getTaskUser(req, res){
-    console.log(req.decoded.userId)
-    TaskModel.find({userId : req.decoded.userId})
-    .populate('userId')
+  
+  static getTodos(req, res){
+    TodoModel.findById(req.params.id, {}, authorization)
+    .populate('taskId')
+    .populate('assignUsers')
+    .populate('createdBy')
+    .populate('updatedBy')
     .exec()
     .then(result => {
       res.status(HttpStatus.OK).json({
-        messages : "Data Task User",
-        data : result
+        messages: "Data Task Todos",
+        data: result
       })
     })
-    .catch(err =>{
-      console.log(err)
+    .catch(err => {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-        messages: "Data Task Error",
+        messages: "Data Tasks Error Server",
         data: err,
         error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
       })
@@ -65,11 +68,11 @@ class TaskController {
   }
 
   static create(req, res) {
-    let { name, userId, description } = req.body
     let dataTask = new TaskModel({
-      name,
-      userId,
-      description
+      name: req.body.name,
+      description: req.body.description,
+      createdBy: req.decoded.userId,
+      updatedBy: req.decoded.userId
     })
     dataTask.save()
       .then(result => {
@@ -89,7 +92,11 @@ class TaskController {
 
   static update(req, res) {
     let { name, description } = req.body
-    TaskModel.findByIdAndUpdate(req.params.id, { name, description })
+    TaskModel.findByIdAndUpdate(req.params.id,{
+        name,
+        description,
+        updatedBy: req.decoded.userId
+      },authorization(req))
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Task Updated",
@@ -106,7 +113,7 @@ class TaskController {
   }
 
   static destroy(req, res) {
-    TaskModel.findByIdAndRemove(req.params.id)
+    TaskModel.findByIdAndRemove(req.params.id, authorization(req))
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Task Deleted",

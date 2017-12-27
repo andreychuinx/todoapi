@@ -2,14 +2,21 @@ const express = require('express');
 const router = express.Router();
 const TodoModel = require('../models/todo')
 const HttpStatus = require('http-status-codes')
+const authorization = require('../helpers/authorization')
 const ObjectID = require('mongodb').ObjectID;
 
 class TodoController {
   static get(req, res) {
-    TodoModel.find()
-      .populate('taskId')
-      .populate('userId')
-      .exec()
+    let whereTodos = {
+      ...authorization(req)
+    }
+    whereTodos.assignUsers = req.decoded.userId
+    TodoModel.find(whereTodos)
+    .populate('taskId')
+    .populate('assignUsers')
+    .populate('createdBy')
+    .populate('updatedBy')
+    .exec()
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Todos",
@@ -26,10 +33,12 @@ class TodoController {
   }
 
   static getSingle(req, res) {
-    TodoModel.findById(req.params.id)
-      .populate('taskId')
-      .populate('userId')
-      .exec()
+    TodoModel.findById(req.params.id, {}, authorization(req))
+    .populate('taskId')
+    .populate('assignUsers')
+    .populate('createdBy')
+    .populate('updatedBy')
+    .exec()
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Single Todo",
@@ -45,39 +54,15 @@ class TodoController {
       })
   }
 
-  static getTodoUser(req, res) {
-    console.log(req.decoded.userId)
-    TodoModel.find({
-      userId: {
-        $in: [req.decoded.userId]
-      }
-    })
-      .populate('taskId')
-      .populate('userId')
-      .exec()
-      .then(result => {
-        res.status(HttpStatus.OK).json({
-          messages: "Data Todo User",
-          data: result
-        })
-      })
-      .catch(err => {
-        console.log(err)
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-          messages: "Data Todo Error",
-          data: err,
-          error: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-        })
-      })
-  }
-
   static create(req, res) {
-    let { name, taskId, userId, description } = req.body
+    let { name, taskId, assignUsers, description } = req.body
     let dataTodo = new TodoModel({
       name,
       taskId,
-      userId,
-      description
+      assignUsers,
+      description,
+      createdBy: req.decoded.userId,
+      updatedBy: req.decoded.userId
     })
     dataTodo.save()
       .then(result => {
@@ -97,7 +82,13 @@ class TodoController {
 
   static update(req, res) {
     let { name, userId, description } = req.body
-    TodoModel.findByIdAndUpdate(req.params.id, { name, userId, description })
+    TodoModel.findByIdAndUpdate(req.params.id, {
+      name,
+      taskId,
+      assignUsers,
+      description,
+      updatedBy: req.decoded.userId
+    }, authorization(req))
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Todo Updated",
@@ -114,7 +105,7 @@ class TodoController {
   }
 
   static destroy(req, res) {
-    TodoModel.findByIdAndRemove(req.params.id)
+    TodoModel.findByIdAndRemove(req.params.id, authorization(req))
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Todo Deleted",

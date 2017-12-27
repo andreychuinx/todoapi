@@ -7,46 +7,46 @@ const ObjectID = require('mongodb').ObjectID;
 
 class SignInController {
   static goSignIn(req, res) {
-    UserModel.findOne({'email' : req.body.email})
+    UserModel.findOne({ 'email': req.body.email })
       .then(result => {
-        if(!result){
+        if (!result) {
           res.status(HttpStatus.NOT_FOUND).send({
-            messages : "Email Not Found",
-            error : HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
+            messages: "Email Not Found",
+            error: HttpStatus.getStatusText(HttpStatus.NOT_FOUND)
           })
-        }else{
+        } else {
           result.comparePassword(req.body.password)
-          .then(isMatch =>{
-            if(isMatch){
-              
-              let objPayLoad = {
-                userId : result.id,
-		userName : result.name,
-                email : result.email,
-                role : result.role
+            .then(isMatch => {
+              if (isMatch) {
+
+                let objPayLoad = {
+                  userId: result.id,
+                  userName: result.name,
+                  email: result.email,
+                  role: result.role
+                }
+                jwt.sign(objPayLoad, process.env.SECRET_KEY, (err, token) => {
+                  if (err) return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+                    messages: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR),
+                    data: err
+                  })
+                  res.status(HttpStatus.OK).json({
+                    messages: "Signin",
+                    data: {
+                      authorization: token,
+                      user: objPayLoad
+                    }
+                  })
+                })
+              } else {
+                res.status(HttpStatus.FORBIDDEN).send({
+                  error: HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
+                })
               }
-              jwt.sign(objPayLoad, process.env.SECRET_KEY, (err, token) =>{
-                if(err) return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                  messages : HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR),
-                  data : err
-                })
-                res.status(HttpStatus.OK).json({
-                  messages : "Signin",
-                  data : {
-                    authorization : token,
-                    user : objPayLoad
-                  }
-                })
-              })
-            }else{
-              res.status(HttpStatus.FORBIDDEN).send({
-                error : HttpStatus.getStatusText(HttpStatus.FORBIDDEN)
-              })
-            }
-          })
-          .catch(err =>{
-            console.log(err)
-          })
+            })
+            .catch(err => {
+              console.log(err)
+            })
         }
       })
       .catch(err => {

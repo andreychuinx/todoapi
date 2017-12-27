@@ -9,14 +9,22 @@ var todoSchema = new Schema({
     type : Schema.Types.ObjectId,
     ref : 'Task'
   },
-  userId : [{
+  assignUsers : [{
     type : Schema.Types.ObjectId,
     ref : 'User'
   }],
   description : String,
   statusCompleted : {
-    type : Number,
-    default : 0
+    type : String,
+    default : 'unCompleted'
+  },
+  createdBy : {
+    type : Schema.Types.ObjectId,
+    ref : 'User'
+  },
+  updatedBy : {
+    type : Schema.Types.ObjectId,
+    ref : 'User'
   }
 }, {timestamps : {}})
 

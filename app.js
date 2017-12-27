@@ -17,9 +17,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/task', task);
-app.use('/api/user', user);
-app.use('/api/todo', todo);
+app.use('/api/tasks', task);
+app.use('/api/users', user);
+app.use('/api/todos', todo);
 app.use('/api/signup', signup);
 app.use('/api/signin', signin);
 
