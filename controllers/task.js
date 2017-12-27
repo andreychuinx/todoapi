@@ -95,10 +95,11 @@ class TaskController {
   }
 
   static update(req, res) {
-    let { name, description } = req.body
+    let { name, description, statusCompleted } = req.body
     TaskModel.findByIdAndUpdate(req.params.id, {
       name,
       description,
+      statusCompleted,
       updatedBy: req.decoded.userId
     }, authorization(req))
       .then(result => {
