@@ -81,6 +81,10 @@ class TodoController {
   }
 
   static update(req, res) {
+    let options = {
+      ...authorization(req)
+    }
+    options.new = true
     let { name, userId, description } = req.body
     TodoModel.findByIdAndUpdate(req.params.id, {
       name,
@@ -88,7 +92,7 @@ class TodoController {
       assignUsers,
       description,
       updatedBy: req.decoded.userId
-    }, authorization(req))
+    }, options)
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Todo Updated",
