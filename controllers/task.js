@@ -101,7 +101,7 @@ class TaskController {
       description,
       statusCompleted,
       updatedBy: req.decoded.userId
-    }, authorization(req))
+    }, {authorization(req), new : true})
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Task Updated",
