@@ -96,7 +96,7 @@ class TaskController {
 
   static update(req, res) {
     let { name, description, statusCompleted } = req.body
-    authorization(req).new = true
+    console.log(authorization(req))
     TaskModel.findByIdAndUpdate(req.params.id, {
       name,
       description,
