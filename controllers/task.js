@@ -96,13 +96,16 @@ class TaskController {
 
   static update(req, res) {
     let { name, description, statusCompleted } = req.body
-    console.log(authorization(req))
+    let options = {
+      ...authorization(req)
+    }
+    options.new = true
     TaskModel.findByIdAndUpdate(req.params.id, {
       name,
       description,
       statusCompleted,
       updatedBy: req.decoded.userId
-    }, authorization(req))
+    }, options)
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Task Updated",
@@ -119,7 +122,11 @@ class TaskController {
   }
 
   static destroy(req, res) {
-    TaskModel.findByIdAndRemove(req.params.id, authorization(req))
+    let options = {
+      ...authorization(req)
+    }
+    options.new = true
+    TaskModel.findByIdAndRemove(req.params.id, options)
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Task Deleted",

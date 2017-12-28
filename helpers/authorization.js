@@ -3,8 +3,7 @@ module.exports = function (req) {
     return {}
   }else {
     return {
-      createdBy : req.decoded.userId,
-      new : true
+      createdBy : req.decoded.userId
     }
   }
 }
