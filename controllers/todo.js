@@ -85,12 +85,13 @@ class TodoController {
       ...authorization(req)
     }
     options.new = true
-    let { name, userId, description } = req.body
+    let { name, taskId, assignUsers, statusCompleted, description } = req.body
     TodoModel.findByIdAndUpdate(req.params.id, {
       name,
       taskId,
       assignUsers,
       description,
+      statusCompleted,
       updatedBy: req.decoded.userId
     }, options)
       .then(result => {
