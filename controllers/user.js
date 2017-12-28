@@ -7,7 +7,7 @@ const ObjectID = require('mongodb').ObjectID;
 
 class UserController {
   static get(req, res) {
-    UserModel.find(authorization(req))
+    UserModel.find()
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Users",
@@ -24,7 +24,7 @@ class UserController {
   }
 
   static getSingle(req, res) {
-    UserModel.findById(req.params.id, {}, authorization(req))
+    UserModel.findById(req.params.id)
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Single User",
