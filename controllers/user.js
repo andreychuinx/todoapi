@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const UserModel = require('../models/user')
 const HttpStatus = require('http-status-codes')
+const authorization = require('../helpers/authorization')
 const ObjectID = require('mongodb').ObjectID;
 
 class UserController {
   static get(req, res) {
-    UserModel.find()
+    UserModel.find(authorization(req))
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Users",
@@ -23,7 +24,7 @@ class UserController {
   }
 
   static getSingle(req, res) {
-    UserModel.findById(req.params.id)
+    UserModel.findById(req.params.id, {}, authorization(req))
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Single User",
@@ -67,8 +68,12 @@ class UserController {
   }
 
   static update(req, res) {
+    let options = {
+      ...authorization(req)
+    }
+    options.new = true
     let { name, email, password, role } = req.body
-    UserModel.findByIdAndUpdate(req.params.id, { name, email, password, role })
+    UserModel.findByIdAndUpdate(req.params.id, { name, email, password, role }, options)
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "User Updated",
@@ -85,7 +90,11 @@ class UserController {
   }
 
   static destroy(req, res) {
-    UserModel.findByIdAndRemove(req.params.id)
+    let options = {
+      ...authorization(req)
+    }
+    options.new = true
+    UserModel.findByIdAndRemove(req.params.id, options)
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "User Deleted",
