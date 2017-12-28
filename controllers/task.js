@@ -96,12 +96,13 @@ class TaskController {
 
   static update(req, res) {
     let { name, description, statusCompleted } = req.body
+    authorization(req).new = true
     TaskModel.findByIdAndUpdate(req.params.id, {
       name,
       description,
       statusCompleted,
       updatedBy: req.decoded.userId
-    }, {authorization(req), new : true})
+    }, {authorization(req)})
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Task Updated",
