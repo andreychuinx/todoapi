@@ -6,6 +6,7 @@ const facebook = new FB.Facebook({
 })
 
 module.exports = function (req, res, next) {
+  console.log(req.body)
   facebook
   .api('me', {
     fields : ['id','name','email'],
