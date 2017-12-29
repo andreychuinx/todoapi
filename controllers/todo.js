@@ -12,11 +12,11 @@ class TodoController {
     }
     whereTodos.assignUsers = req.decoded.userId
     TodoModel.find(whereTodos)
-    .populate('taskId')
-    .populate('assignUsers')
-    .populate('createdBy')
-    .populate('updatedBy')
-    .exec()
+      .populate('taskId')
+      .populate('assignUsers')
+      .populate('createdBy')
+      .populate('updatedBy')
+      .exec()
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Todos",
@@ -34,11 +34,11 @@ class TodoController {
 
   static getSingle(req, res) {
     TodoModel.findById(req.params.id, {}, authorization(req))
-    .populate('taskId')
-    .populate('assignUsers')
-    .populate('createdBy')
-    .populate('updatedBy')
-    .exec()
+      .populate('taskId')
+      .populate('assignUsers')
+      .populate('createdBy')
+      .populate('updatedBy')
+      .exec()
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Data Single Todo",
@@ -95,10 +95,17 @@ class TodoController {
       updatedBy: req.decoded.userId
     }, options)
       .then(result => {
+        result
+          .populate('member')
+          .populate('booklist')
+          .execPopulate()
+      })
+      .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Todo Updated",
           data: result
         })
+
       })
       .catch(err => {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
