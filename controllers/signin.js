@@ -6,6 +6,49 @@ const jwt = require('jsonwebtoken')
 const ObjectID = require('mongodb').ObjectID;
 
 class SignInController {
+
+  static goSignInFB(req, res) {
+    const { email, name } = req.fbUser
+    UserModel.findOne({
+      email
+    })
+      .then(result => {
+        if (!result) {
+          let password = Math.random().toString(36)
+          return UserModel.create({
+            name,
+            email,
+            password
+          })
+        }
+        return user
+      })
+      .then(user => {
+        const objPayLoad = {
+          userId: user.id,
+          userName: result.name,
+          email: result.email,
+          role: result.role
+        }
+        jwt.sign(objPayLoad, process.env.SECRET_KEY, (err, token) => {
+          if (err) return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            messages: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR),
+            data: err
+          })
+          res.status(HttpStatus.OK).json({
+            messages: "Signin",
+            data: {
+              authorization: token,
+              user: objPayLoad
+            }
+          })
+        })
+      })
+      .catch(err => {
+        log(err)
+      })
+  }
+
   static goSignIn(req, res) {
     UserModel.findOne({ 'email': req.body.email })
       .then(result => {
