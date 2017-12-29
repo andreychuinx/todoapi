@@ -96,8 +96,8 @@ class TodoController {
     }, options)
       .then(result => {
         result
-          .populate('member')
-          .populate('booklist')
+          .populate('taskId')
+	  .populate('assignUsers')
           .execPopulate()
       })
       .then(result => {
