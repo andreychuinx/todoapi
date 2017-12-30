@@ -94,15 +94,11 @@ class TodoController {
       statusCompleted,
       updatedBy: req.decoded.userId
     }, options)
-      .then(result => {
-        return
-        result
-          .populate('taskId')
-          .populate('assignUsers')
-          .populate('createdBy')
-          .populate('updatedBy')
-          .execPopulate()
-      })
+      .populate('taskId')
+      .populate('assignUsers')
+      .populate('createdBy')
+      .populate('updatedBy')
+      .exec()
       .then(result => {
         res.status(HttpStatus.OK).json({
           messages: "Todo Updated",
