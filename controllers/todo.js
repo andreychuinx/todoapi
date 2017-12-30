@@ -95,13 +95,8 @@ class TodoController {
       updatedBy: req.decoded.userId
     }, options)
       .then(result => {
+        return
         result
-          .populate('taskId')
-          .populate('assignUsers')
-          .execPopulate()
-      })
-      .then(result => {
-        return 
           .populate('taskId')
           .populate('assignUsers')
           .populate('createdBy')
