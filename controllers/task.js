@@ -125,16 +125,14 @@ class TaskController {
     let options = {
       ...authorization(req)
     }
-    options.new = true
-    TaskModel.findByIdAndRemove(req.params.id, options)
-    // TodoModel.remove({taskId : req.params.id})
-    // .then(result =>{
-    //   let options = {
-    //     ...authorization(req)
-    //   }
-    //   options.new = true
-    //   return TaskModel.findByIdAndRemove(req.params.id, options)
-    // })
+    TodoModel.remove({taskId : req.params.id})
+    .then(result =>{
+      let options = {
+        ...authorization(req)
+      }
+      options.new = true
+      return TaskModel.findByIdAndRemove(req.params.id, options)
+    })
     .then(result => {
       res.status(HttpStatus.OK).json({
         messages: "Task and Todos Deleted",
