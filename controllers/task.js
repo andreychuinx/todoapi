@@ -129,7 +129,7 @@ class TaskController {
         ...authorization(req)
       }
       options.new = true
-      return TaskModel.findByIdAndRemov(req.params.id, options)
+      return TaskModel.findByIdAndRemove(req.params.id, options)
     })
     .then(result => {
       res.status(HttpStatus.OK).json({
