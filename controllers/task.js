@@ -122,17 +122,21 @@ class TaskController {
   }
 
   static destroy(req, res) {
-    let options = {
-      ...authorization(req)
-    }
-    options.new = true
-    TaskModel.findByIdAndRemove(req.params.id, options)
+    TodoModel.remove({taskId : req.params.id})
+    .then(resultTodoRemove =>{
+      let options = {
+        ...authorization(req)
+      }
+      options.new = true
+      TaskModel.findByIdAndRemove(req.params.id, options)
       .then(result => {
         res.status(HttpStatus.OK).json({
-          messages: "Task Deleted",
+          messages: "Task and Todos Deleted",
           data: result
         })
       })
+    })
+    
   }
 }
 
