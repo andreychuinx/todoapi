@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt')
-mongoose.connect('mongodb://localhost:27017/todo', {useMongoClient: true})
-mongoose.Promise = global.Promise;
 
 var userSchema = new Schema({
   name : String,

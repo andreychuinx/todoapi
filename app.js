@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const HttpStatus = require('http-status-codes')
+const mongoose = require('mongoose')
 const cors = require('cors')
 
 const task = require('./routes/tasks');
@@ -11,6 +12,14 @@ const signup = require('./routes/signup');
 const signin = require('./routes/signin');
 
 require('dotenv').config()
+mongoose.connection.openUri(process.env.DATABAS, { useMongoClient: true });
+mongoose.Promise = global.Promise;
+mongoose.connection.once('open', () => {
+  console.log('mongoose connection success');
+}).on('error', (error) => {
+  console.log('connection error', error);
+})
+
 const app = express();
 app.use(cors())
 app.use(bodyParser.json());
