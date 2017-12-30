@@ -65,12 +65,16 @@ class TodoController {
       updatedBy: req.decoded.userId
     })
     dataTodo.save()
-      .populate('taskId')
-      .populate('assignUsers')
-      .populate('createdBy')
-      .populate('updatedBy')
-      .exec()
       .then(result => {
+        return result
+          .populate('taskId')
+          .populate('assignUsers')
+          .populate('createdBy')
+          .populate('updatedBy')
+          .execPopulate()
+        
+      })
+      .then(rsult =>{
         res.status(HttpStatus.OK).json({
           messages: "Todos Created",
           data: result
