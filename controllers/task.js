@@ -124,6 +124,7 @@ class TaskController {
   static destroy(req, res) {
     TodoModel.remove({taskId : req.params.id})
     .then(result =>{
+      console.log(result)
       let options = {
         ...authorization(req)
       }
