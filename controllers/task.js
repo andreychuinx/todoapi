@@ -123,17 +123,23 @@ class TaskController {
 
   static destroy(req, res) {
     TodoModel.remove({taskId : req.params.id})
-    .then(resultTodoRemove =>{
+    .then(result =>{
       let options = {
         ...authorization(req)
       }
       options.new = true
-      TaskModel.findByIdAndRemove(req.params.id, options)
-      .then(result => {
-        res.status(HttpStatus.OK).json({
-          messages: "Task and Todos Deleted",
-          data: result
-        })
+      return TaskModel.findByIdAndRemov(req.params.id, options)
+    })
+    .then(result => {
+      res.status(HttpStatus.OK).json({
+        messages: "Task and Todos Deleted",
+        data: result
+      })
+    })
+    .catch(err =>{
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        messages : "Errr",
+        data : err
       })
     })
     
