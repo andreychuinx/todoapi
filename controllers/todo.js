@@ -11,7 +11,7 @@ class TodoController {
       ...authorization(req)
     }
     whereTodos.assignUsers = {$elemMatch : {_id : req.decoded.userId}}
-    TodoModel.find({assignUsers : {$elemMatch : {_id : req.decoded.userId}})
+    TodoModel.find({assignUsers : {$elemMatch : {_id : req.decoded.userId}}})
       .populate('taskId')
       .populate('assignUsers')
       .populate('createdBy')
