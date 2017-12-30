@@ -10,8 +10,8 @@ class TodoController {
     let whereTodos = {
       ...authorization(req)
     }
-    whereTodos.assignUsers = req.decoded.userId
-    TodoModel.find(whereTodos)
+    whereTodos.assignUsers = {$elemMatch : req.decoded.userId}
+    TodoModel.find({$or : [whereTodos]})
       .populate('taskId')
       .populate('assignUsers')
       .populate('createdBy')
@@ -33,7 +33,11 @@ class TodoController {
   }
 
   static getSingle(req, res) {
-    TodoModel.findById(req.params.id, {}, authorization(req))
+    let whereTodos = {
+      ...authorization(req)
+    }
+    whereTodos.assignUsers = {$elemMatch : req.decoded.userId}
+    TodoModel.findById(req.params.id, {}, {$or : [whereTodos] })
       .populate('taskId')
       .populate('assignUsers')
       .populate('createdBy')
