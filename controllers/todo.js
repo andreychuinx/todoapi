@@ -74,7 +74,7 @@ class TodoController {
           .execPopulate()
         
       })
-      .then(rsult =>{
+      .then(result =>{
         res.status(HttpStatus.OK).json({
           messages: "Todos Created",
           data: result
