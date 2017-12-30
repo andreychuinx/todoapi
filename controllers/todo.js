@@ -10,7 +10,7 @@ class TodoController {
     let whereTodos = {
       ...authorization(req)
     }
-    whereTodos.assignUsers = {$elemMatch : req.decoded.userId}
+    whereTodos.assignUsers = {$elemMatch : {_id : req.decoded.userId}}
     TodoModel.find({$or : [whereTodos]})
       .populate('taskId')
       .populate('assignUsers')
