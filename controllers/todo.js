@@ -97,7 +97,15 @@ class TodoController {
       .then(result => {
         result
           .populate('taskId')
-	  .populate('assignUsers')
+          .populate('assignUsers')
+          .execPopulate()
+      })
+      .then(result => {
+        return 
+          .populate('taskId')
+          .populate('assignUsers')
+          .populate('createdBy')
+          .populate('updatedBy')
           .execPopulate()
       })
       .then(result => {
@@ -105,7 +113,6 @@ class TodoController {
           messages: "Todo Updated",
           data: result
         })
-
       })
       .catch(err => {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
