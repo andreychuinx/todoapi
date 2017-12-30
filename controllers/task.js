@@ -130,7 +130,6 @@ class TaskController {
       let options = {
         ...authorization(req)
       }
-      options.new = true
       return TaskModel.findByIdAndRemove(req.params.id, options)
     })
     .then(result => {
