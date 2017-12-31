@@ -13,7 +13,7 @@ var todoSchema = new Schema({
   },
   assignUsers : [{
     type : Schema.Types.ObjectId,
-    required : true
+    required : true,
     ref : 'User'
   }],
   description : {
