@@ -2,18 +2,27 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 var todoSchema = new Schema({
-  name : String,
+  name : {
+    type : String,
+    required : true
+  },
   taskId : {
     type : Schema.Types.ObjectId,
+    required : true,
     ref : 'Task'
   },
   assignUsers : [{
     type : Schema.Types.ObjectId,
+    required : true
     ref : 'User'
   }],
-  description : String,
+  description : {
+    type : String,
+    required : true
+  },
   statusCompleted : {
     type : String,
+    required : true, 
     default : 'unCompleted'
   },
   createdBy : {

@@ -2,12 +2,18 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 var taskSchema = new Schema({
-  name : String,
+  name : {
+    type : String,
+    required : true
+  },
   
-  description : String,
+  description : {
+    type : String,
+    required : true
+  },
   statusCompleted : {
     type : String,
-    default : 'unCompleted'
+    default : 'unCompleted',
   },
   createdBy : {
     type : Schema.Types.ObjectId,
